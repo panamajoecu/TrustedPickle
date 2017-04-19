@@ -1,0 +1,9 @@
+f = file("filename.pub",'rb')
+buff = f.read()
+print  "pub = %s%s%s" % ('"""', buff.encode("base64"), '"""')
+
+f = file("filename.prv",'rb')
+buff = f.read()
+print  "prv = %s%s%s" % ('"""', buff.encode("base64"), '"""')
+
+
