@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TrustedPickle - Python module</title>
+<style type="text/css">
+body { margin: 0 }
+.content { padding: 20; vertical-align: top }
+.region { background-color: #99CCFF }
+.region td { padding-left: 10 }
+.topic { background-color: #003366; color: #FFFFFF; font-weight: bold }
+.warning { border: thin solid black; padding: 1em; margin-left: 2em;
+  margin-right: 2em }
+.warning .label { font-family: sans-serif; font-size: 110%;
+  margin-right: 0.5em }
+.note { border: thin solid black; padding: 1em; margin-left: 2em;
+  margin-right: 2em }
+.note .label { font-family: sans-serif; margin-right: 0.5em }
+h1, h2, h3, h4, h5, h6 { font-family: avantgarde, sans-serif;
+  font-weight: bold }
+h1 { font-size: 180% }
+h2 { font-size: 150% }
+h3, h4 { font-size: 120% }
+.typelabel { font-family: lucida, sans-serif }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000BB" vlink="#551A8B"
+alink="#FF0000">
+<table border="0" cellspacing="0"
+cellpadding="0" width="100%" height="100%"><tr><td width="150" height="35"><img
+src="http://www.python.org/pics/PyBanner004.gif" width="150" height="35"></td>
+<td class="region"><table width="100%"><tr><td width="33%" align="center"><a
+href="http://sourceforge.net/projects/trustedpickle/">Project</a></td>
+<td width="33%" align="center"><a
+href="http://python.org/">Python</a></td>
+<td width="33%" align="center"><a
+href="http://sourceforge.net/">SourceForge</a></td>
+</tr></table></td></tr>
+<td class="region" valign="top"><table border="0" cellspacing="0" cellpadding="3" width="100%">
+<tr><td><a href="index.html">Introduction</b></td></tr>
+<tr><td><a href="legal.html">Legal Notes</a></td></tr>
+<tr><td><a href="questions.html">Suitability</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Setup</td></tr>
+<tr><td><a href="download.html">Download</a></td></tr>
+<tr><td><a href="install.html">Installation</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">How to</td></tr>
+<tr><td><a href="keygen.html">Key Generation</a></td></tr>
+<tr><td><a href="signing.html">Signing a Document</a></td></tr>
+<tr><td><a href="validation.html">Testing a Document</a></td></tr>
+<tr><td><a href="trust.html">Trust Relationships</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Documentation</td></tr>
+<tr><td><a href="toplevel.html">TrustedPickle</a></td></tr>
+<tr><td><a href="ModuleObject.html">ModuleObject</a></td></tr>
+<tr><td><a href="PrivateKey.html">PrivateKey</a></td></tr>
+<tr><td><a href="PublicKey.html">PublicKey</a></td></tr>
+<tr><td><b>PublicKeyFile</b></td></tr>
+<tr><td><a href="Signature.html">Signature</a></td></tr>
+<tr><td><a href="TPickle.html">TPickle</a></td></tr>
+<tr><td><a href="TrustRelationship.html">TrustRelationship</a></td></tr>
+</table></td>
+<td class="content">
+
+<h2><tt>PublicKeyFile</tt> -- File which contains public keys and trusts</h2>
+
+<p><tt>PublicKeyFile</tt> instances export the following attributes:</p>
+
+<dl>
+  <dt><b><tt>Keys</tt></b></dt>
+  <dd>Dictionary of <tt>PublicKey</tt> objects in this file. Each key object
+    is indexed by its 128-bit public key value.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>Owner</tt></b></dt>
+  <dd>128-bit public key value of the user who created this file.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>Revoked</tt></b></dt>
+  <dd>Dictionary of dictionaries, just like <tt>Trusted</tt>, below. Each
+    <tt>PublicKey</tt> in this attribute is a trust relationship we no longer
+    honor.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>Trusted</tt></b></dt>
+  <dd>Dictionary of dictionaries. Both the inner and outer dictionaries are
+    indexed with 128-bit public key values. Each
+    <nobr><tt>Trusted[Trustee][Truster]</tt></nobr> node contains a
+    <tt>TrustRelationship</tt> instance where <tt>Trustee</tt> is trusting
+    <tt>Truster</tt>. Each <tt>TrustRelationship</tt> instance is signed with
+    the <tt>Truster</tt>'s private key.</dd>
+</dl>
+
+<p><tt>PublicKeyFile</tt> instances export the following functions:</p>
+
+<dl>
+  <dt><b><tt>AddTrust</tt></b>(<i>PubFilename, Private</i><big>[</big><i>,
+    Transferrable</i><big>]</big>)</dt>
+  <dd><p>Creates a valid <tt>TrustRelationship</tt> object where the
+    <tt>PublicKeyFile</tt>'s <tt>Owner</tt> is the truster and the trustee is
+    taken from the <tt>PublicKeyFile</tt> named by <tt>PubFilename</tt>. Call
+    <tt>Write()</tt> after calling <tt>AddTrust()</tt>. If the
+    <tt>PrivateKey</tt> in <tt>Private</tt> does not match the <tt>Owner</tt>'s
+    public key, then <tt>AddTrust()</tt> will throw a <tt>MismatchedKeys</tt>
+    exception.</p>
+    <p>If <tt>Transferrable</tt> is set to <tt>"Y"</tt> (default is
+    <tt>"N"</tt>) then the truster is not only vouching for any files created
+    by the trustee, but also allowing the trustee to create further trust
+    relationships. Use great caution before setting <tt>Transferrable</tt> to
+    <tt>"Y"</tt>.</p></dd>
+</dl>
+
+<dl>
+  <dt><b><tt>Merge</tt></b>(<i>PubFile</i><big>[</big><i>,
+    Overwrite</i><big>]</big>)</dt>
+  <dd>Merges all public keys and trust relationships in the
+    <tt>PublicKeyFile</tt> named by <tt>PubFile</tt> into the
+    <tt>PublicKeyFile</tt> object. Call <tt>Write()</tt> after calling
+    <tt>Merge()</tt>. If <tt>Overwrite</tt> is set to <tt>True</tt> (it defaults
+    to <tt>False</tt>) then any duplicate entries in <tt>PubFile</tt> will
+    overwrite those in the <tt>PublicKeyFile</tt>.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>MyPublicKey</tt></b>()</dt>
+  <dd>Returns the owner's <tt>PublicKey</tt> instance. Shortcut for
+  <nobr><tt>Keys[Owner]</tt></nobr>.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>Read</tt></b>()</dt>
+  <dd>Reads instance from disk.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>RevokeTrust</tt></b>(<i>Relationship</i>)</dt>
+  <dd>Removes the given <tt>TrustRelationship</tt> object (if present) from
+    <tt>Trusted</tt> and adds it to <tt>Revoked</tt>.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>Write</tt></b>()</dt>
+  <dd>Writes instance back out to disk.</dd>
+</dl>
+
+</td></tr></table>
+</body>
+</html>

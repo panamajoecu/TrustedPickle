@@ -1,0 +1,9 @@
+12/31/03 - Gre7g Luterman <gre7g@wolfhome.com>
+
+Added documentation.
+
+Added module wrapping so modules can be pickled and unpickled.
+
+12/28/03 - Gre7g Luterman <gre7g@wolfhome.com>
+
+Initial release.

@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TrustedPickle - Python module</title>
+<style type="text/css">
+body { margin: 0 }
+.content { padding: 20; vertical-align: top }
+.region { background-color: #99CCFF }
+.region td { padding-left: 10 }
+.topic { background-color: #003366; color: #FFFFFF; font-weight: bold }
+h1, h2, h3, h4, h5, h6 { font-family: avantgarde, sans-serif;
+  font-weight: bold }
+h1 { font-size: 180% }
+h2 { font-size: 150% }
+h3, h4 { font-size: 120% }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000BB" vlink="#551A8B"
+alink="#FF0000">
+<table border="0" cellspacing="0"
+cellpadding="0" width="100%" height="100%"><tr><td width="150" height="35"><img
+src="http://www.python.org/pics/PyBanner004.gif" width="150" height="35"></td>
+<td class="region"><table width="100%"><tr><td width="33%" align="center"><a
+href="http://sourceforge.net/projects/trustedpickle/">Project</a></td>
+<td width="33%" align="center"><a
+href="http://python.org/">Python</a></td>
+<td width="33%" align="center"><a
+href="http://sourceforge.net/">SourceForge</a></td>
+</tr></table></td></tr>
+<td class="region" valign="top"><table border="0" cellspacing="0" cellpadding="3" width="100%">
+<tr><td><a href="index.html">Introduction</b></td></tr>
+<tr><td><a href="legal.html">Legal Notes</a></td></tr>
+<tr><td><b>Suitability</b></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Setup</td></tr>
+<tr><td><a href="download.html">Download</a></td></tr>
+<tr><td><a href="install.html">Installation</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">How to</td></tr>
+<tr><td><a href="keygen.html">Key Generation</a></td></tr>
+<tr><td><a href="signing.html">Signing a Document</a></td></tr>
+<tr><td><a href="validation.html">Testing a Document</a></td></tr>
+<tr><td><a href="trust.html">Trust Relationships</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Documentation</td></tr>
+<tr><td><a href="toplevel.html">TrustedPickle</a></td></tr>
+<tr><td><a href="ModuleObject.html">ModuleObject</a></td></tr>
+<tr><td><a href="PrivateKey.html">PrivateKey</a></td></tr>
+<tr><td><a href="PublicKey.html">PublicKey</a></td></tr>
+<tr><td><a href="PublicKeyFile.html">PublicKeyFile</a></td></tr>
+<tr><td><a href="Signature.html">Signature</a></td></tr>
+<tr><td><a href="TPickle.html">TPickle</a></td></tr>
+<tr><td><a href="TrustRelationship.html">TrustRelationship</a></td></tr>
+</table></td>
+<td class="content">
+
+<h2>Is TrustedPickle a good fit for my application?</h2>
+
+<p>Although useful, TrustedPickle is no Swiss army knife. Read through the
+following list of questions to get a better idea of when and when not to use
+TrustedPickle.</p>
+
+<p><b>Do you need to transfer data between applications written in different
+languages?</b></p>
+
+<ul><li>If you answered "yes", then XML is probably a better choice for your
+structured data format needs. Check out <a
+href="http://www.reportlab.com/docs/PyRXP_Documentation.pdf">PyRXP</a> from <a
+href="http://reportlab.com/">ReportLab</a>.</li></ul>
+
+<p><b>Will you need to protect your users from data files purported to be from
+you, but actually created by a malicious user?</b></p>
+
+<ul><li>If you answered "yes", then TrustedPickle is a good choice. Without
+access to your private key, malicious users are unable to sign documents they
+create such that they appear to be from you.</li></ul>
+
+<p><b>Are the data files you are considering signing ever transferred between
+computers?</b></p>
+
+<ul><li>If you answered "no", then the standard pickle module would probably be
+a better fit for your application. The standard pickle module is sufficient for
+saving an application's state between sessions and it is far simpler to
+use.</li></ul>
+
+<p><b>Do you require your data to be encrypted?</b></p>
+
+<ul><li>If you answered "yes", then <a
+href="http://eevolved.com/cryptkit/">CryptKit</a> from <a
+href="http://eevolved.com/">eEvolved</a> is probably a better choice for you.
+TrustedPickle does binary encode and optionally compress pickle files, making
+them more difficult to decypher by viewing the file's ASCII content, but it does
+not encrypt.</li></ul>
+
+<p><b>Will your users be able to accept data files from a relatively small
+community of programmers?</b></p>
+
+<ul><li>If you answered "yes", then TrustedPickle is a good choice.
+TrustedPickle allows you to create trust relationships. These trust
+relationships show that you trust a given programmer. The trusted programmer can
+then roll that proof into their data files so they will work with your
+application.</li></ul>
+
+<p><b>Would you like to alert your users when a file's origin is not recognized,
+and then give them the option of using the file anyhow?</b></p>
+
+<ul><li>If you answered "yes", then TrustedPickle is a good choice.
+TrustedPickle returns more than just a simple pass/fail answer. You can maintain
+a list of public keys the user trusts, beyond those shipped with the
+application.</li></ul>
+
+<p><b>Are you looking for a way to transfer data from an application you create
+to applications created by other users (or vice-versa)?</b></p>
+
+<ul><li>If you answered "yes", then XML would probably be a better choice. Using
+pickle files to transfer data between applications is not ideal since it forces
+both ends of the link to be written in Python.</li></ul>
+
+</td></tr></table>
+</body>
+</html>

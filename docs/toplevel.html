@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TrustedPickle - Python module</title>
+<style type="text/css">
+body { margin: 0 }
+.content { padding: 20; vertical-align: top }
+.region { background-color: #99CCFF }
+.region td { padding-left: 10 }
+.topic { background-color: #003366; color: #FFFFFF; font-weight: bold }
+.warning { border: thin solid black; padding: 1em; margin-left: 2em;
+  margin-right: 2em }
+.warning .label { font-family: sans-serif; font-size: 110%;
+  margin-right: 0.5em }
+.note { border: thin solid black; padding: 1em; margin-left: 2em;
+  margin-right: 2em }
+.note .label { font-family: sans-serif; margin-right: 0.5em }
+h1, h2, h3, h4, h5, h6 { font-family: avantgarde, sans-serif;
+  font-weight: bold }
+h1 { font-size: 180% }
+h2 { font-size: 150% }
+h3, h4 { font-size: 120% }
+.typelabel { font-family: lucida, sans-serif }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000BB" vlink="#551A8B"
+alink="#FF0000">
+<table border="0" cellspacing="0"
+cellpadding="0" width="100%" height="100%"><tr><td width="150" height="35"><img
+src="http://www.python.org/pics/PyBanner004.gif" width="150" height="35"></td>
+<td class="region"><table width="100%"><tr><td width="33%" align="center"><a
+href="http://sourceforge.net/projects/trustedpickle/">Project</a></td>
+<td width="33%" align="center"><a
+href="http://python.org/">Python</a></td>
+<td width="33%" align="center"><a
+href="http://sourceforge.net/">SourceForge</a></td>
+</tr></table></td></tr>
+<td class="region" valign="top"><table border="0" cellspacing="0" cellpadding="3" width="100%">
+<tr><td><a href="index.html">Introduction</b></td></tr>
+<tr><td><a href="legal.html">Legal Notes</a></td></tr>
+<tr><td><a href="questions.html">Suitability</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Setup</td></tr>
+<tr><td><a href="download.html">Download</a></td></tr>
+<tr><td><a href="install.html">Installation</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">How to</td></tr>
+<tr><td><a href="keygen.html">Key Generation</a></td></tr>
+<tr><td><a href="signing.html">Signing a Document</a></td></tr>
+<tr><td><a href="validation.html">Testing a Document</a></td></tr>
+<tr><td><a href="trust.html">Trust Relationships</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Documentation</td></tr>
+<tr><td><b>TrustedPickle</b></td></tr>
+<tr><td><a href="ModuleObject.html">ModuleObject</a></td></tr>
+<tr><td><a href="PrivateKey.html">PrivateKey</a></td></tr>
+<tr><td><a href="PublicKey.html">PublicKey</a></td></tr>
+<tr><td><a href="PublicKeyFile.html">PublicKeyFile</a></td></tr>
+<tr><td><a href="Signature.html">Signature</a></td></tr>
+<tr><td><a href="TPickle.html">TPickle</a></td></tr>
+<tr><td><a href="TrustRelationship.html">TrustRelationship</a></td></tr>
+</table></td>
+<td class="content">
+
+<h2><tt>TrustedPickle</tt> -- Signed pickle files</h2>
+
+<p>TrustedPickle exports the following constants:</p>
+
+<dl>
+  <dt><b><tt>TRUSTED</tt></b></dt>
+  <dd>Signer class code indicating that the signers returned were listed
+    as trusted programmers. The document should be used without sending any
+    alerts to the user.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>TRANSFERRED</tt></b></dt>
+  <dd>Signer class code indicating that no trusted programmers have signed the
+    document, but the signers listed have trust relationships with other
+    programmers who did sign the document. The document should be used without
+    sending any alerts to the user.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>UNKNOWN</tt></b></dt>
+  <dd>Signer class code indicating that no trusted programmers have signed the
+    document. Additionally, the document did not contain any trust relationships
+    with anyone on the trusted programmers list. If no <tt>PublicKey</tt>s are
+    returned, that indicates that the document is unsigned. The document should
+    either be rejected or the user should be alerted and given a chance to
+    decide whether the document is used or not.</dd>
+</dl>
+
+<dl>
+  <dt><b><tt>REVOKED</tt></b></dt>
+  <dd>Signer class code indicating that the signers returned are no longer
+    trusted. The document should not be used.</dd>
+</dl>
+
+<p>TrustedPickle exports the following exceptions:</p>
+
+<dl>
+  <dt><b class="typelabel">exception</b> <b><tt>FileFormatError</tt></b></dt>
+  <dd>Thrown when a key or pickle file cannot be read because the data has been
+    written in an unexpected format. This will happen, for instance, if you try
+    to read a standard pickle file as a TrustedPickle file.</dd>
+</dl>
+
+<dl>
+  <dt><b class="typelabel">exception</b> <b><tt>MismatchedKeys</tt></b></dt>
+  <dd>Thrown when a mismatched key pair (a private key from one user and a
+    public key from another) is used to try and sign a document or trust
+    relationship. This exception is <i><b>never</b></i> thrown by any
+    <tt>Test()</tt> function.</dd>
+</dl>
+
+<p>TrustedPickle exports the following functions:</p>
+
+<dl>
+  <dt><b><tt>Hash</tt></b>(<i>String</i>)</dt>
+  <dd><p>Calculates a numeric hash of <tt>String</tt>. In general, you should not
+    need to call this function unless you want to give your users an option of
+    ignoring future warnings on a given document as opposed to future warnings
+    from a given set of signers.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> hex(TrustedPickle.Hash(Doc2.Data))<br>
+'0xFCE9E27B0E883459A0551BF5F9CBE582L'</tt></td></tr></table>
+
+    </dd>
+</dl>
+
+<dl>
+  <dt><b><tt>NewKeys</tt></b>()</dt>
+  <dd>Interactively creates a new public and private key pair. Call from
+    Python's command line interface.</dd>
+</dl>
+
+<p>TrustedPickle exports the following classes:</p>
+
+<dl>
+  <dt><b class="typelabel">class</b>
+    <b><tt>ModuleObject</tt></b>(<i>Module</i>)</dt>
+  <dd>Used internally to wrap and unwrap a module. I recommend against using
+    this class directly to try and pickle multiple modules in a single file.
+    Although it is possible, there are many subtle caveats that I do not plan
+    to detail in this documentation.</dd>
+</dl>
+
+<dl>
+  <dt><b class="typelabel">class</b>
+    <b><tt>PrivateKey</tt></b>(<i>Filename</i><big>[</big><i>,
+      Password</i><big>[</big><i>, Key</i><big>]]</big>)</dt>
+  <dd>This class lets you read in a private key file from disk. The
+    <tt>Password</tt> parameter defaults to <tt>""</tt> if not present. The
+    <tt>Key</tt> parameter is for internal use only.</dd>
+</dl>
+
+<dl>
+  <dt><b class="typelabel">class</b>
+    <b><tt>PublicKey</tt></b>(<i>n, Key, Name, Address, PrivVal</i>)</dt>
+  <dd>You should never need to directly instantiate a <tt>PublicKey</tt> object.
+    Instantiate a <tt>PublicKeyFile</tt> object instead.</dd>
+</dl>
+
+<dl>
+  <dt><b class="typelabel">class</b>
+    <b><tt>PublicKeyFile</tt></b>(<i>Filename</i><big>[</big><i>,
+      Public</i><big>]</big>)</dt>
+  <dd>This class lets you read in a public key file from disk. The
+    <tt>Public</tt> parameter is for internal use only.</dd>
+</dl>
+
+<dl>
+  <dt><b class="typelabel">class</b>
+    <b><tt>Signature</tt></b>(<i>Signer, Validator</i>)<br>
+      <b class="typelabel">class</b>
+    <b><tt>Signature</tt></b>(<i>Data, PublicFile, Private</i>)</dt>
+  <dd>You should never need to directly instantiate a <tt>Signature</tt> object.
+    Instead, call the <tt>Sign</tt> member of a <tt>TPickle</tt> object.</dd>
+</dl>
+
+<dl>
+  <dt><b class="typelabel">class</b>
+    <b><tt>TPickle</tt></b>(<i>Filename</i>)</dt>
+  <dd>This class lets you create and manipulate signed pickle documents.</dd>
+</dl>
+
+<dl>
+  <dt><b class="typelabel">class</b>
+    <b><tt>TrustRelationship</tt></b>(<i>Truster, Trustee, n, Transferrable,
+      Validator</i>)<br>
+      <b class="typelabel">class</b>
+    <b><tt>TrustRelationship</tt></b>(<i>Truster, Trustee,
+      PrivVal</i><big>[</big><i>, Transferrable</i><big>]</big>)</dt>
+  <dd>You should never need to directly instantiate a
+    <tt>TrustRelationship</tt> object. Instead, call the <tt>AddTrust</tt>
+    member of a <tt>TPickle</tt> object.</dd>
+</dl>
+
+</td></tr></table>
+</body>
+</html>

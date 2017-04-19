@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TrustedPickle - Python module</title>
+<style type="text/css">
+body { margin: 0 }
+.content { padding: 20; vertical-align: top }
+.region { background-color: #99CCFF }
+.region td { padding-left: 10 }
+.topic { background-color: #003366; color: #FFFFFF; font-weight: bold }
+.warning { border: thin solid black; padding: 1em; margin-left: 2em;
+  margin-right: 2em }
+.warning .label { font-family: sans-serif; font-size: 110%;
+  margin-right: 0.5em }
+.note { border: thin solid black; padding: 1em; margin-left: 2em;
+  margin-right: 2em }
+.note .label { font-family: sans-serif; margin-right: 0.5em }
+h1, h2, h3, h4, h5, h6 { font-family: avantgarde, sans-serif;
+  font-weight: bold }
+h1 { font-size: 180% }
+h2 { font-size: 150% }
+h3, h4 { font-size: 120% }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000BB" vlink="#551A8B"
+alink="#FF0000">
+<table border="0" cellspacing="0"
+cellpadding="0" width="100%" height="100%"><tr><td width="150" height="35"><img
+src="http://www.python.org/pics/PyBanner004.gif" width="150" height="35"></td>
+<td class="region"><table width="100%"><tr><td width="33%" align="center"><a
+href="http://sourceforge.net/projects/trustedpickle/">Project</a></td>
+<td width="33%" align="center"><a
+href="http://python.org/">Python</a></td>
+<td width="33%" align="center"><a
+href="http://sourceforge.net/">SourceForge</a></td>
+</tr></table></td></tr>
+<td class="region" valign="top"><table border="0" cellspacing="0" cellpadding="3" width="100%">
+<tr><td><a href="index.html">Introduction</b></td></tr>
+<tr><td><a href="legal.html">Legal Notes</a></td></tr>
+<tr><td><a href="questions.html">Suitability</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Setup</td></tr>
+<tr><td><a href="download.html">Download</a></td></tr>
+<tr><td><a href="install.html">Installation</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">How to</td></tr>
+<tr><td><a href="keygen.html">Key Generation</a></td></tr>
+<tr><td><a href="signing.html">Signing a Document</a></td></tr>
+<tr><td><a href="validation.html">Testing a Document</a></td></tr>
+<tr><td><b>Trust Relationships</b></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Documentation</td></tr>
+<tr><td><a href="toplevel.html">TrustedPickle</a></td></tr>
+<tr><td><a href="ModuleObject.html">ModuleObject</a></td></tr>
+<tr><td><a href="PrivateKey.html">PrivateKey</a></td></tr>
+<tr><td><a href="PublicKey.html">PublicKey</a></td></tr>
+<tr><td><a href="PublicKeyFile.html">PublicKeyFile</a></td></tr>
+<tr><td><a href="Signature.html">Signature</a></td></tr>
+<tr><td><a href="TPickle.html">TPickle</a></td></tr>
+<tr><td><a href="TrustRelationship.html">TrustRelationship</a></td></tr>
+</table></td>
+<td class="content">
+
+<h2>Trust Relationships</h2>
+
+<p>Trust relationships are, admittedly, fairly tricky. Fortunately, you don't
+generally need to use them.</p>
+
+<p>Let's pretend that our current keyset was created by an application's
+programmer. Graham has hard-coded his public key into the application so it will
+read any TrustedPickles he might later create. Let's further pretend that
+another programmer creates a TrustedPickle document to work with Graham's
+application.</p>
+
+<p>If Graham has written his application in a flexible manner, it will alert
+users when they try to load this new document.  It could then give them the
+option to use the document anyhow and even allow future documents signed by this
+new programmer.</p>
+
+<p>This is all well and fine, but a stern warning will discourage wide-scale
+adoption of this new document. Let's say that Graham wants to accept all
+documents from this new programmer. He now has three options:</p>
+
+<ol>
+  <li>Re-sign this (and all future) documents with his own key.</li>
+  <li>Hard-code this new public key into the application as well and release
+    a new version of the application.</li>
+  <li>Sign a trust relationship with the new programmer.</li>
+</ol>
+
+<p>Obviously the first two options are less desirable.</p>
+
+<p>To demonstrate how this works, we're going to need a second set of keys to
+represent the second programmer. In the real world, this new programmer would
+create his/er own keys, so Graham would never have access to his/er private
+key.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> TrustedPickle.NewKeys()<br>
+Your name: Terry Gilliam<br>
+Your e-mail address: castle@arrrrrrgh.com<br>
+Key pair filename base (___.pub & ___.prv): terry<br>
+Private key password (blank OK): <i>("Brazil" not shown)</i><br>
+Repeat password (for verification): <i>("Brazil" not shown)</i></tt></td></tr></table>
+
+<p>Now we need to do some file shuffling. Terry needs to get his <b>public</b>
+key file over to Graham so that he can create the trust relationship. Graham is
+providing proof that he trusts Terry, so he signs with his private key.</p>
+
+<p class="note"><b class="label">Note:</b> Public key files may be freely
+shared. They do not contain any sensative data.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> PubKeyFile.AddTrust("terry.pub", PrivKey)<br>
+>>> PubKeyFile.Write()</tt></td></tr></table>
+
+<p>This may be confusing, but the new trust relationship that Graham just signed
+is written into <b>Graham's</b> public key file, and not Terry's. Graham could
+update Terry's public key file and then mail it back to him, but then Terry
+would have to trust that Graham has not erased any previous trust relationships
+out of the file (or otherwise corrupted the file). I know I wouldn't be
+comfortable doing that, so let's not assume that Terry is either.</p>
+
+<p>Instead, let's have Graham mail his new public key file over to Terry so
+Terry can use it to update his own public key file. This can be done with the
+<tt>Merge()</tt> function.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> PubKeyFile2 = TrustedPickle.PublicKeyFile("terry.pub")<br>
+>>> PubKeyFile2.Read()<br>
+>>> PubKeyFile2.Merge("graham.pub")<br>
+>>> PubKeyFile2.Write()</tt></td></tr></table>
+
+<p>Now that Terry has a public key file showing that Graham trusts him, let's
+create a new document file and have Terry sign it.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> PrivKey2 = TrustedPickle.PrivateKey("terry.prv", "Brazil")<br>
+>>> PrivKey2.Read()<br>
+>>> Doc2 = TrustedPickle.TPickle("terry.tpk")<br>
+>>> Doc2.Pickle("Terry's document is this string.")<br>
+>>> Doc2.Sign(PubKeyFile2, PrivKey2, True)<br>
+>>> Doc2.Write()</tt></td></tr></table>
+
+<p>Note the extra parameter when we called the <tt>Sign()</tt> function this
+time. This indicates to include all upstream trust relationships in the
+document.</p>
+
+<p>Now let's test the document against Graham's public key.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> SigClass, SigList = Doc2.TestSignatures(Trusted)<br>
+>>> SigClass == TrustedPickle.TRANSFERRED<br>
+True<br>
+>>> len(SigList)<br>
+1<br>
+>>> SigList[0].Name<br>
+'Graham Chapman'</tt></td></tr></table>
+
+<p>The signature class code is now <tt>TRANSFERRED</tt>. Note that although
+Terry actually signed the document, Graham's public key is returned by
+<tt>TestSignatures()</tt>. Graham is the trusted user and he vouched for Terry's
+opinion.</p>
+
+</td></tr></table>
+</body>
+</html>

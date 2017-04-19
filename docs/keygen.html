@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TrustedPickle - Python module</title>
+<style type="text/css">
+body { margin: 0 }
+.content { padding: 20; vertical-align: top }
+.region { background-color: #99CCFF }
+.region td { padding-left: 10 }
+.topic { background-color: #003366; color: #FFFFFF; font-weight: bold }
+.warning { border: thin solid black; padding: 1em; margin-left: 2em;
+  margin-right: 2em }
+.warning .label { font-family: sans-serif; font-size: 110%;
+  margin-right: 0.5em }
+h1, h2, h3, h4, h5, h6 { font-family: avantgarde, sans-serif;
+  font-weight: bold }
+h1 { font-size: 180% }
+h2 { font-size: 150% }
+h3, h4 { font-size: 120% }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000BB" vlink="#551A8B"
+alink="#FF0000">
+<table border="0" cellspacing="0"
+cellpadding="0" width="100%" height="100%"><tr><td width="150" height="35"><img
+src="http://www.python.org/pics/PyBanner004.gif" width="150" height="35"></td>
+<td class="region"><table width="100%"><tr><td width="33%" align="center"><a
+href="http://sourceforge.net/projects/trustedpickle/">Project</a></td>
+<td width="33%" align="center"><a
+href="http://python.org/">Python</a></td>
+<td width="33%" align="center"><a
+href="http://sourceforge.net/">SourceForge</a></td>
+</tr></table></td></tr>
+<td class="region" valign="top"><table border="0" cellspacing="0" cellpadding="3" width="100%">
+<tr><td><a href="index.html">Introduction</b></td></tr>
+<tr><td><a href="legal.html">Legal Notes</a></td></tr>
+<tr><td><a href="questions.html">Suitability</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Setup</td></tr>
+<tr><td><a href="download.html">Download</a></td></tr>
+<tr><td><a href="install.html">Installation</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">How to</td></tr>
+<tr><td><b>Key Generation</b></td></tr>
+<tr><td><a href="signing.html">Signing a Document</a></td></tr>
+<tr><td><a href="validation.html">Testing a Document</a></td></tr>
+<tr><td><a href="trust.html">Trust Relationships</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Documentation</td></tr>
+<tr><td><a href="toplevel.html">TrustedPickle</a></td></tr>
+<tr><td><a href="ModuleObject.html">ModuleObject</a></td></tr>
+<tr><td><a href="PrivateKey.html">PrivateKey</a></td></tr>
+<tr><td><a href="PublicKey.html">PublicKey</a></td></tr>
+<tr><td><a href="PublicKeyFile.html">PublicKeyFile</a></td></tr>
+<tr><td><a href="Signature.html">Signature</a></td></tr>
+<tr><td><a href="TPickle.html">TPickle</a></td></tr>
+<tr><td><a href="TrustRelationship.html">TrustRelationship</a></td></tr>
+</table></td>
+<td class="content">
+
+<h2>Key Generation</h2>
+
+<p><a href="#LoadingKeys">Loading Keys</a><p>
+
+<p>For your convenience, we've included an interactive key generator with
+TrustedPickle. You can use the key generator from Python's command line
+interpreter.</p>
+
+<p>We strongly suggest you use the interactive key generator rather than calling
+the underlying member functions directly. The <tt>NewKeys()</tt> function relies
+on the unpredictable nature of the user's typing speed to help properly seed the
+random number generator.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>Python 2.3.2 (#49, Oct  2 2003, 20:02:00) [MSC v.1200 32 bit (Intel)] on win32<br>
+Type "help", "copyright", "credits" or "license" for more information.<br>
+>>> import TrustedPickle<br>
+>>> TrustedPickle.NewKeys()<br>
+Your name: Graham Chapman<br>
+Your e-mail address: penguin@telly.org<br>
+Key pair filename base (___.pub & ___.prv): graham<br>
+Private key password (blank OK): <i>("monty" not shown)</i><br>
+Repeat password (for verification): <i>("monty" not shown)</i><br>
+>>> import glob<br>
+>>> glob.glob("graham.*")<br>
+['graham.prv', 'graham.pub']</tt></td></tr></table>
+
+<p class="warning"><b class="label">Warning:</b> Keep your private key secret!
+Do not e-mail it, post it on the Internet, or save it on a public machine. The
+security on this data is only as good as the password you select. Make sure
+malicious users cannot access this file at all.</p>
+
+<p>As you can see above, public keys are kept along with the creator's name and
+e-mail address. Entering a password (not displayed for security reasons) for the
+private key file is optional, but recommended.</p>
+
+<a name="LoadingKeys"><h3>Loading Keys</h3>
+
+<p>Once a private and public key pair has been created, you can fetch both back
+by instantiating the <tt>PrivateKey</tt> and <tt>PublicKeyFile</tt> objects,
+respectively.</p>
+
+<p>Note that the public key (<tt>PublicKey</tt> object) is stored in a
+<tt>PublicKeyFile</tt> object. These key files can contain multiple public keys
+(as explained in <a href="trust.html">Trust Relationships</a>, later), and
+therefore multiple <tt>PublicKey</tt> objects.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> PrivKey = TrustedPickle.PrivateKey("graham.prv", "monty")<br>
+>>> PrivKey.Read()<br>
+>>> PubKeyFile = TrustedPickle.PublicKeyFile("graham.pub")<br>
+>>> PubKeyFile.Read()<br>
+>>> PubKey = PubKeyFile.MyPublicKey()</tt></td></tr></table>
+
+<p>After loading a private key, you should always test it against the public key
+to see if it was loaded correctly. Using an incorrect password to load the
+private key <b><i>will not</i></b> raise an exception of any sort, it will just
+load useless data that cannot be used to correctly sign a document or trust
+relationship.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> PrivKey.Test(PubKey)<br>
+True</tt></td></tr></table>
+
+<p>Public keys may also be tested, but there's not much point in testing your
+own key, since public key files are not password encoded. Public keys are
+automatically tested by TrustedPickle if they have been used to sign a
+document.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> PubKey.Test()<br>
+True</tt></td></tr></table>
+
+</td></tr></table>
+</body>
+</html>

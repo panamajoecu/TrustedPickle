@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TrustedPickle - Python module</title>
+<style type="text/css">
+body { margin: 0 }
+.content { padding: 20; vertical-align: top }
+.region { background-color: #99CCFF }
+.region td { padding-left: 10 }
+.topic { background-color: #003366; color: #FFFFFF; font-weight: bold }
+.warning { border: thin solid black; padding: 1em; margin-left: 2em;
+  margin-right: 2em }
+.warning .label { font-family: sans-serif; font-size: 110%;
+  margin-right: 0.5em }
+.note { border: thin solid black; padding: 1em; margin-left: 2em;
+  margin-right: 2em }
+.note .label { font-family: sans-serif; margin-right: 0.5em }
+h1, h2, h3, h4, h5, h6 { font-family: avantgarde, sans-serif;
+  font-weight: bold }
+h1 { font-size: 180% }
+h2 { font-size: 150% }
+h3, h4 { font-size: 120% }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000BB" vlink="#551A8B"
+alink="#FF0000">
+<table border="0" cellspacing="0"
+cellpadding="0" width="100%" height="100%"><tr><td width="150" height="35"><img
+src="http://www.python.org/pics/PyBanner004.gif" width="150" height="35"></td>
+<td class="region"><table width="100%"><tr><td width="33%" align="center"><a
+href="http://sourceforge.net/projects/trustedpickle/">Project</a></td>
+<td width="33%" align="center"><a
+href="http://python.org/">Python</a></td>
+<td width="33%" align="center"><a
+href="http://sourceforge.net/">SourceForge</a></td>
+</tr></table></td></tr>
+<td class="region" valign="top"><table border="0" cellspacing="0" cellpadding="3" width="100%">
+<tr><td><a href="index.html">Introduction</b></td></tr>
+<tr><td><a href="legal.html">Legal Notes</a></td></tr>
+<tr><td><a href="questions.html">Suitability</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Setup</td></tr>
+<tr><td><a href="download.html">Download</a></td></tr>
+<tr><td><a href="install.html">Installation</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">How to</td></tr>
+<tr><td><a href="keygen.html">Key Generation</a></td></tr>
+<tr><td><b>Signing a Document</b></td></tr>
+<tr><td><a href="validation.html">Testing a Document</a></td></tr>
+<tr><td><a href="trust.html">Trust Relationships</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td class="topic">Documentation</td></tr>
+<tr><td><a href="toplevel.html">TrustedPickle</a></td></tr>
+<tr><td><a href="ModuleObject.html">ModuleObject</a></td></tr>
+<tr><td><a href="PrivateKey.html">PrivateKey</a></td></tr>
+<tr><td><a href="PublicKey.html">PublicKey</a></td></tr>
+<tr><td><a href="PublicKeyFile.html">PublicKeyFile</a></td></tr>
+<tr><td><a href="Signature.html">Signature</a></td></tr>
+<tr><td><a href="TPickle.html">TPickle</a></td></tr>
+<tr><td><a href="TrustRelationship.html">TrustRelationship</a></td></tr>
+</table></td>
+<td class="content">
+
+<h2>Signing a Document</h2>
+
+<p><a href="#Module">Pickling a Module</a></p>
+
+<p>Before you sign a document, you need something to sign. Almost any data
+object may be pickled. See the <a target="_blank"
+href="http://www.python.org/doc/2.3.2/lib/node64.html">pickle manual page</a>
+for details of what can and can not be saved in a pickle.</p>
+
+<p>For the following examples, we'll use a datetime object.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> import datetime<br>
+>>> Now = datetime.datetime.now()<br>
+>>> Doc = TrustedPickle.TPickle("datetime.tpk")<br>
+>>> Doc.Pickle(Now)<br>
+>>> Doc.Write()<br>
+>>> glob.glob("datetime.tpk")<br>
+['datetime.tpk']</tt></td></tr></table>
+
+<p>As you can see above, TrustedPickles can be saved before they are signed.
+TrustedPickles may have zero or more signatures. Each signature is that
+programmer's vouchure that the data is valid and safe. This flexibility gives
+you a convenient way to develop program add-ons:</p>
+
+<ol>
+  <li><p>A programmer develops an add-in module for an existing application.
+    While in alpha testing, s/he leaves the TrustedPickle document unsigned for
+    expediency. The application will warn about the dangers of using an unsigned
+    document throughout the alpha-testing process.</p></li>
+  <li><p>When the module is ready for beta testing, the programmer signs the
+    document with his/er own private key. Assuming the programmer does not yet
+    have a trust relationship with the application's developer, the extension's
+    beta testers are warned about the potential dangers of using the
+    document.</p>
+    <p>We can assume these testers know the programmer, so they will okay the
+    document's use and choose to ignore further warnings about documents signed
+    by this particular programmer (i.e. the application will add the
+    programmer's public key to their list of trusted programmers).</p></li>
+  <li><p>When the document has passed beta testing, it can then be handed off to
+    another programmer, higher up the application's food chain. That programmer
+    can then try out the code and sign it with their private key to show that
+    they have confidence in the module's coding.</p>
+    <p>If this programmer is the application's coder (or is on the application's
+    trusted list) then any user can use the newly-signed file without receiving
+    a warning.</p></li>
+  <li><p>For projects with many developers, the document may need to be tested
+    by other programmers, still higher up the food chain. These programmers can
+    test the signatures of other programmers lower on the food chain before
+    signing the document themselves. That way they can feel confident that the
+    document has been tested by others as well.</p></li>
+</ol>
+
+<p>Now let's sign this simple <tt>datetime</tt> object with our previously
+generated private key.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> Doc.Sign(PubKeyFile, PrivKey)<br>
+>>> Doc.Write()</tt></td></tr></table>
+
+<h3><a name="Module" />Pickling a Module</h3>
+
+<p>In addition to pickling data objects, TrustedPickle may also pickle most
+modules. However, it is important to note that when TrustedPickle pickles a
+module, it captures the disk image, not the memory image. In other words, when
+you unpickle the module, it will be as if you just imported it. The module's
+namespace is not saved in the pickling process.</p>
+
+<table border="0" cellpadding="0" cellspacing="2"><tr><td width="35"></td>
+<td bgcolor="#99CCFF" width="2"></td>
+<td><tt>>>> ModPickle = TrustedPickle.TPickle("module.tpk")<br>
+>>> ModPickle.Pickle(glob)<br>
+>>> ModPickle.Write()<br>
+>>> ModGlob = ModPickle.Unpickle()<br>
+>>> ModGlob.glob("module.*")<br>
+['module.tpk']</tt></td></tr></table>
+
+<p class="note"><b class="label">Note:</b> TrustedPickle will only pickle a
+module if the module is passed directly to the <tt>Pickle()</tt> function. It
+will not pickle a tuple of modules. If you pickle a class instance that has a
+module as a member, for instance, <tt>Pickle()</tt> will only save a reference
+to the module's name, just like the standard pickle module does.</p>
+
+</td></tr></table>
+</body>
+</html>
