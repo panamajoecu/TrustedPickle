@@ -81,7 +81,7 @@ ModuleObject:  module wrapper
 
 Low-level functions in this module you should not need to call:
 
-Hash(): used in signing a string
+Hash(): used in signing a string"""
 
 import cPickle
 import getpass
@@ -91,6 +91,7 @@ import os
 import random
 import re
 import sets
+import io
 from types import *
 import zlib
 
@@ -240,6 +241,15 @@ changing the password!"""
   def Read(self):
     "Read and decode the key from a file."
     F = open(self.Filename, "rb")
+    try:
+      if F.read(4) != MAGIC_PRIV: raise FileFormatError
+      self.Key = ReadN(F, 17) ^ self.Password
+    finally:
+      F.close()
+
+  def Read_Mem(self,string):
+    "Read and decode the key from a file."
+    F = io.BytesIO(string)
     try:
       if F.read(4) != MAGIC_PRIV: raise FileFormatError
       self.Key = ReadN(F, 17) ^ self.Password
@@ -435,6 +445,29 @@ public key and all their pertinent trust relationships."""
   def Read(self):
     "Read file from disk."
     F = open(self.Filename, "rb")
+    try:
+      if F.read(4) != MAGIC_PUB: raise FileFormatError
+      self.Owner = ReadN(F, 16)
+      self.Keys = {}
+      for i in range(ReadN(F, 2)):
+        P = PublicKey.Read(F)
+        self.Keys[P.Key] = P
+      self.Trusted = {}
+      for i in range(ReadN(F, 2)):
+        T = TrustRelationship.Read(F)
+        self.Trusted[T.Trustee] = self.Trusted.get(T.Trustee, {})
+        self.Trusted[T.Trustee][T.Truster] = T
+      self.Revoked = {}
+      for i in range(ReadN(F, 2)):
+        T = TrustRelationship.Read(F)
+        self.Revoked[T.Trustee] = self.Revoked.get(T.Trustee, {})
+        self.Revoked[T.Trustee][T.Truster] = T
+    finally:
+      F.close()
+
+  def Read_Mem(self,string):
+    "Read file from memory."
+    F = io.BytesIO(string)
     try:
       if F.read(4) != MAGIC_PUB: raise FileFormatError
       self.Owner = ReadN(F, 16)
