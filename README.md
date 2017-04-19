@@ -1,3 +1,4 @@
+# TrustedPickle
 This is a Github mirror for the awesome TrustedPickle package!  See the proper website below.
 
 TrustedPickle
@@ -12,7 +13,7 @@ export.
 
 For more information, visit the TrustedPickle homepage:
 
-    <URL:http://trustedpickle.sourceforge.net/>
+    http://trustedpickle.sourceforge.net/
 
 Installation instructions can be found on the TrustedPickle homepage.
 
